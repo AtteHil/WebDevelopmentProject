@@ -1,0 +1,12 @@
+#map{
+    height: 94vh;
+}
+body{
+    background-color: #0B0F0B;
+}
+h1{
+    color: green;
+}
+#chart{
+    width: 250px;
+}
