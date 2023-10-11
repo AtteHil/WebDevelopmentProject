@@ -8,5 +8,11 @@ h1{
     color: green;
 }
 #chart{
-    width: 250px;
+    width: 20%;
+}
+#EducationChart{
+    width: 80%;
+}
+.charts{
+    display: flex;
 }
