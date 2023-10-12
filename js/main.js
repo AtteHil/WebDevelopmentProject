@@ -791,17 +791,25 @@ function resetLayer(layer){
     })
 }
 // Create chart for the desired location
-function createCharts(name, populationArrays, index,educationData){
+async function createCharts(name, populationArrays, index,educationData){
     const mapElement = document.getElementById('map');
     mapElement.style.height = '50vh';
     let Button = document.getElementById('myButton');
+    let calculateButton = document.getElementById('calculateButton');
     if (!Button){
-       Button=  makeButton()
+      const buttons = makeButton()
+       Button=  buttons.button;
+       calculateButton = buttons.calculateButton;
+       
     }
-    Button.addEventListener('click', () => window.location.reload())
+    
 
     buildChart(populationArrays, index,name );
-    educationChart(name, index,educationData);
+    const chart =await educationChart(name, index,educationData);
+    Button.addEventListener('click', () => window.location.reload());
+    calculateButton.addEventListener('click',() =>updateChart(chart,populationArrays.total[index]));
+    // console.log(populationArrays.total);
+    
     
     
 
@@ -809,10 +817,18 @@ function createCharts(name, populationArrays, index,educationData){
 } //If are is clicked button is made to refresh the page back to big map
 function makeButton(){
     const button = document.createElement('button');
+    button.classList.add('buttons');
     button.textContent = 'back to full map';
-    button.id = 'myButton'
+    button.id = 'myButton';
+    const calculateButton = document.createElement('button');
+    calculateButton.classList.add('buttons');
+    calculateButton.textContent = 'Calculate % of population';
+    calculateButton.id = 'calculateButton';
+    document.body.appendChild(calculateButton);
     document.body.appendChild(button);
-    return button
+    
+
+    return {button,calculateButton}
 }
 
 
@@ -884,7 +900,7 @@ function buildChart(populationArrays, index, name){
         datasets: [
             
             {
-                name: "Data",
+                name: "",
                 
                 values: [populationArrays.men[index],populationArrays.female[index]]
             }
@@ -941,6 +957,33 @@ async function educationChart(name,index,educationData){
 
     
   });
+  return chart;
+  
+  
+}
+function updateChart(chart,population){
+  console.log(population)
+  const array = chart.data.labels
+  const percentvalues = chart.data.datasets[0].values
+   
+  for (i=0; i<percentvalues.length;i++){percentvalues[i]=(percentvalues[i]/population)*100}
+  console.log(percentvalues)
+  const data= {
+    labels:array,
+
+    datasets: [
+        
+        {
+            name: "",
+            
+            values: percentvalues
+        }
+    ],
+
+   
+    }
+    
+  chart.update(data);
 }
 async function GetChartData(){
   const url = 'https://statfin.stat.fi:443/PxWeb/api/v1/en/StatFin/vkour/statfin_vkour_pxt_12bq.px'
