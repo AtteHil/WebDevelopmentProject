@@ -775,7 +775,7 @@ async function onLoad(){
         
             
             
-             layer.bindTooltip(feature.properties.nimi +"<br>"+ populationArrays.total[population.dimension.Alue.category.index[areaCode]])
+             layer.bindTooltip(feature.properties.nimi +"<br>Population: "+ populationArrays.total[population.dimension.Alue.category.index[areaCode]])
 
             
 
@@ -796,19 +796,21 @@ async function createCharts(name, populationArrays, index,educationData){
     mapElement.style.height = '50vh';
     let Button = document.getElementById('myButton');
     let calculateButton = document.getElementById('calculateButton');
+    let exportButton = document.getElementById('exportButton');
     if (!Button){
       const buttons = makeButton()
        Button=  buttons.button;
        calculateButton = buttons.calculateButton;
+       exportButton = buttons.exportButton;
        
     }
     
 
-    buildChart(populationArrays, index,name );
-    const chart =await educationChart(name, index,educationData);
+    const chart=buildChart(populationArrays, index,name );
+    const eduChart =await educationChart(name, index,educationData);
     Button.addEventListener('click', () => window.location.reload());
-    calculateButton.addEventListener('click',() =>updateChart(chart,populationArrays.total[index]));
-    // console.log(populationArrays.total);
+    calculateButton.addEventListener('click',() =>updateChart(eduChart,populationArrays.total[index], chart));
+    exportButton.addEventListener('click', () => {chart.export(); eduChart.export()});
     
     
     
@@ -816,6 +818,8 @@ async function createCharts(name, populationArrays, index,educationData){
     
 } //If are is clicked button is made to refresh the page back to big map
 function makeButton(){
+    const parentdiv= document.getElementById('titleAndButtons');
+    
     const button = document.createElement('button');
     button.classList.add('buttons');
     button.textContent = 'back to full map';
@@ -824,11 +828,17 @@ function makeButton(){
     calculateButton.classList.add('buttons');
     calculateButton.textContent = 'Calculate % of population';
     calculateButton.id = 'calculateButton';
-    document.body.appendChild(calculateButton);
-    document.body.appendChild(button);
+    const exportButton = document.createElement('button');
+    exportButton.classList.add('buttons');
+    exportButton.textContent = 'Export charts';
+    exportButton.id = 'exportButton';
+
+    parentdiv.appendChild(calculateButton);
+    parentdiv.appendChild(button);
+    parentdiv.appendChild(exportButton);
     
 
-    return {button,calculateButton}
+    return {button,calculateButton, exportButton}
 }
 
 
@@ -854,7 +864,7 @@ function getKeyByName(population, name) {
         return key;
       }
     }
-    return null;
+    return 
   }
 //separate population to total, men and female arrays
 function makeArrays(data){
@@ -908,23 +918,24 @@ function buildChart(populationArrays, index, name){
     
        
         },
-    
+        
         title: "Population by sex",
         type: 'bar',
-        height: 250,
+        height: 370,
         
-        colors: ["#46FE06"]
+        colors: ["#46FE06"],
+        
     
         
       });
+      return chart;
 }
 async function educationChart(name,index,educationData){
-  // const data = await GetChartData();
-  // console.log(data);
+ 
   const calculatedIndex = (index*9);
   const value = [];
   for (i=calculatedIndex; i<(calculatedIndex+9); i++){ value.push(educationData.value[i])};
-
+ //labels come in wrong order for some reason and have to be adjustet to their place 
   const array= Object.values(educationData.dimension.Koulutusaste.category.label);
   let shiftedValues = [array[array.length-1], array[array.length-2]]
   array.unshift(shiftedValues[0]);
@@ -951,7 +962,7 @@ async function educationChart(name,index,educationData){
     spaceRatio:1,
     title: `Education level of ${name}`,
     type: 'line',
-    height: 380,
+    height: 370,
     
     colors: ["#46FE06"]
 
@@ -961,14 +972,24 @@ async function educationChart(name,index,educationData){
   
   
 }
-function updateChart(chart,population){
-  console.log(population)
-  const array = chart.data.labels
-  const percentvalues = chart.data.datasets[0].values
+function exportCharts(chart,genderChart){
+  console.log("moi");
+  chart.export();
+  genderChart.export();
+}
+function updateChart(chart,population, genderChart){
+  
+  if( chart.data.datasets[0].values[0]<100){
+    return 
+  }
+  const genderLabels = genderChart.data.labels;
+  const percentGenderValues = genderChart.data.datasets[0].values;
+  const array = chart.data.labels;
+  const percentvalues = chart.data.datasets[0].values;
    
-  for (i=0; i<percentvalues.length;i++){percentvalues[i]=(percentvalues[i]/population)*100}
-  console.log(percentvalues)
-  const data= {
+  for (i=0; i<percentvalues.length;i++){percentvalues[i]=(percentvalues[i]/population)*100};
+  
+  const educationData= {
     labels:array,
 
     datasets: [
@@ -982,8 +1003,19 @@ function updateChart(chart,population){
 
    
     }
-    
-  chart.update(data);
+  const genderData ={
+    labels: genderLabels,
+    datasets: [
+      {
+        name: "",
+        
+        values:[(percentGenderValues[0]/population)*100,(percentGenderValues[1]/population)*100] 
+    }
+    ]
+  }
+  genderChart.update(genderData);
+  chart.update(educationData);
+  
 }
 async function GetChartData(){
   const url = 'https://statfin.stat.fi:443/PxWeb/api/v1/en/StatFin/vkour/statfin_vkour_pxt_12bq.px'

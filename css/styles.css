@@ -1,18 +1,81 @@
 #map{
     height: 94vh;
+    border-radius: 3px;
+    border-color: #46FE06;
+    border-width: 3px;
+    border-style: solid;
 }
 body{
     background-color: #0B0F0B;
 }
 h1{
     color: green;
+    margin-right: 5%;
 }
 #chart{
     width: 20%;
 }
+/* Found this from https://stackoverflow.com/questions/76237606/color-axis-labels-in-frappe-charts-perhaps-using-correct-css-selector to edit labels */
+[id*="chart"] > div > svg > g > g.y.axis,g.x.axis > g > text {
+    fill: #FFFFFF;
+  }
+  
 #EducationChart{
     width: 80%;
+    
 }
+[id*="EducationChart"] > div > svg > g > g.y.axis,g.x.axis > g > text {
+    fill: #FFFFFF;
+  }
 .charts{
     display: flex;
+    flex-direction: row; 
+}
+#myButton{
+    background-image: linear-gradient(to right, #8fd3f4  0%, #46FE06 65%, #46FE06  100%);
+    margin-left: 1rem;
+    margin-right: 1rem;
+}
+#calculateButton{
+    background-image: linear-gradient(to right, #8fd3f4  0%, #46FE06 65%, #46FE06  100%);
+    margin-right: 1rem;
+}
+#exportButton{
+    margin-left: 1rem;
+    background-image: linear-gradient(to right, #8fd3f4  0%, #46FE06 65%, #46FE06  100%);
+}
+
+.buttons{
+    
+    color: black;
+    transition: 0.8s;
+    background-size: 200% auto;
+    padding: 10px;
+    
+    border-radius: 8px;
+    height: 3rem;
+    align-content: center;
+}
+.buttons:hover{
+    background-position: right center;
+}
+#titleAndButtons{
+    display: flex;
+    align-items: center;
+    
+}
+
+@media only screen and (max-width: 700px) {
+    #chart, #EducationChart {
+        width: 100%;
+    }
+    #titleAndButtons{
+        flex-direction: column;
+    }
+    #myButton, #calculateButton, #exportButton{
+        margin: 0 0 0 0;
+    }
+    .charts {
+        flex-direction: column; 
+    }
 }
