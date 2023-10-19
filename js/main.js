@@ -1,5 +1,5 @@
 
-
+// data fetching fo the leaflet map
 async function fetchData(){
     const url = "https://geo.stat.fi/geoserver/wfs?service=WFS&version=2.0.0&request=GetFeature&typeName=tilastointialueet:kunta4500k&outputFormat=json&srsName=EPSG:4326";
     const response = await fetch(url);
@@ -8,7 +8,7 @@ async function fetchData(){
     }
     return data = await response.json();
 }
-
+// onLoad function which loads when page is loaded and makes the leaflet map for the page
 async function onLoad(){
     const data = await fetchData();
     const population = await getPopulation();
@@ -37,7 +37,7 @@ async function onLoad(){
             layer.on({
                 click: function (e){
                     if (currentClicked) {
-                        resetLayer(currentClicked);
+                        resetLayer(currentClicked); // sets layer to blue
                     }
                     createCharts(feature.properties.name,populationArrays,population.dimension.Alue.category.index[areaCode],educationData);
                     layer.setStyle({ // changes clicked area to green
@@ -101,7 +101,7 @@ function makeButton(){
     
     const button = document.createElement('button');
     button.classList.add('buttons');
-    button.textContent = 'back to full map';
+    button.textContent = 'Back to full map';
     button.id = 'myButton';
     const calculateButton = document.createElement('button');
     calculateButton.classList.add('buttons');
@@ -267,7 +267,7 @@ async function educationChart(name,index,educationData){
 
 
 function exportCharts(chart,genderChart){
-  console.log("moi");
+  
   chart.export();
   genderChart.export();
 }
