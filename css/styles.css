@@ -1,5 +1,5 @@
 #map{
-    height: 94vh;
+    height: 91vh;
     border-radius: 3px;
     border-color: #46FE06;
     border-width: 3px;
@@ -63,6 +63,18 @@ h1{
     display: flex;
     align-items: center;
     
+}
+#footer{
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    color:#ffffff;
+    width: 100%;
+    opacity: 0.5;
+    position: fixed;
+    bottom: 0;
+    height:1.5rem;
+    align-items: center;
 }
 
 @media only screen and (max-width: 700px) {

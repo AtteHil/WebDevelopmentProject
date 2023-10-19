@@ -73,7 +73,7 @@ function resetLayer(layer){
 // Create chart for the desired location
 async function createCharts(name, populationArrays, index,educationData){
     const mapElement = document.getElementById('map');
-    mapElement.style.height = '50vh';
+    mapElement.style.height = '48vh';
     let Button = document.getElementById('myButton');
     let calculateButton = document.getElementById('calculateButton');
     let exportButton = document.getElementById('exportButton');
@@ -98,19 +98,31 @@ async function createCharts(name, populationArrays, index,educationData){
 //function to make buttons
 function makeButton(){
     const parentdiv= document.getElementById('titleAndButtons');
-    
+    const mapIcon = document.createElement("i");
+    mapIcon.classList.add("fa-solid","fa-map");
+    const exportIcon = document.createElement("i");
+    exportIcon.classList.add("fa-solid","fa-download");
+    const calculateIcon = document.createElement("i");
+    calculateIcon.classList.add("fa-solid","fa-calculator");
+
     const button = document.createElement('button');
     button.classList.add('buttons');
-    button.textContent = 'Back to full map';
+    button.textContent = 'Back to full map  ';
     button.id = 'myButton';
+    
     const calculateButton = document.createElement('button');
     calculateButton.classList.add('buttons');
-    calculateButton.textContent = 'Calculate % of population';
+    calculateButton.textContent = 'Calculate % of population  ';
     calculateButton.id = 'calculateButton';
+
     const exportButton = document.createElement('button');
     exportButton.classList.add('buttons');
-    exportButton.textContent = 'Export charts';
+    exportButton.textContent = 'Export charts  ';
     exportButton.id = 'exportButton';
+
+    button.appendChild(mapIcon);
+    exportButton.appendChild(exportIcon);
+    calculateButton.appendChild(calculateIcon);
 
     parentdiv.appendChild(calculateButton);
     parentdiv.appendChild(button);
